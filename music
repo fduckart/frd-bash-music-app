@@ -3,49 +3,46 @@
 declare -i RECORDID  # 'Max' Record ID.
 
 function printHelp() {
-    
-    local sp2="  "
-    local sp4="    "
-    
+
     printDivider
-    echo "Command Help"
-    echo "${sp2}Use the following commands:"
-    echo 
-    echo "${sp2}add"
-    echo "${sp4}Add a new record to the system."
-    echo 
-    echo "${sp2}delete record (Record ID)"
-    echo "${sp4}Delete artist record by using the Record ID."
-    echo "${sp4}Example: delete record 100000"
-    echo 
-    echo "${sp2}update record (Record ID)"
-    echo "${sp4}Update artist record by using the Record ID."
-    echo "${sp4}Example: update record 100000"
-    echo    
-    echo "${sp2}update track (Record ID) (Track Number)"
-    echo "${sp4}Update track using the Record ID and track number."
-    echo "${sp4}Example: update track 100001 3"    
-    echo 
-    echo "${sp2}count"
-    echo "${sp4}Display the number of records in system."
-    echo 
-    echo "${sp2}help"
-    echo "${sp4}Display help on using program."
-    echo
-    echo "${sp2}list [Record ID]"
-    echo "${sp4}List all or one of the record entries."
-    echo "${sp4}You can show specific record details by "
-    echo "${sp4}using the optional Record ID argument."
-    echo 
-    echo "${sp2}search id     (keyword)"
-    echo "${sp2}search artist (keyword)"
-    echo "${sp2}search title  (keyword)"
-    echo "${sp2}search genre  (keyword)"
-    echo "${sp4}Search by category and keyword."
-    echo "${sp4}Example: search genre Punk"
-    echo 
-    echo "${sp2}quit"
-    echo "${sp4}Quit the program."
+    printf "Command Help\n"
+    printf "  Use the following commands: \n\n"
+
+    printf "  add \n"
+    printf "    Add a new record to the system. \n\n"
+
+    printf "  delete record (Record ID) \n"
+    printf "    Delete artist record by using the Record ID. \n"
+    printf "    Example: delete record 100000 \n\n"
+
+    printf "  update record (Record ID) \n"
+    printf "    Update artist record by using the Record ID. \n"
+    printf "    Example: update record 100000 \n\n"
+
+    printf "  update track (Record ID) (Track Number) \n"
+    printf "    Update track using the Record ID and track number. \n"
+    printf "    Example: update track 100001 3 \n\n"
+
+    printf "  count \n"
+    printf "    Display the number of records in system. \n\n"
+
+    printf "  help \n"
+    printf "    Display help on using program. \n\n"
+
+    printf "  list [Record ID] \n"
+    printf "    List all or one of the record entries. \n"
+    printf "    You can show specific record details by  \n"
+    printf "    using the optional Record ID argument. \n\n"
+
+    printf "  search id     (keyword) \n"
+    printf "  search artist (keyword) \n"
+    printf "  search title  (keyword) \n"
+    printf "  search genre  (keyword) \n"
+    printf "    Search by category and keyword. \n"
+    printf "    Example: search genre Punk \n\n"
+
+    printf "  quit \n"
+    printf "    Quit the program. \n"
     printDivider
 }
 
@@ -55,17 +52,17 @@ function init() {
     local maxId=100000
     local musicFile   # Loop pointer.
     local fileName    # Current file name in loop.
-    
-    for musicFile in ./*.muz.txt  
+
+    for musicFile in ./*.muz.txt
     do
         # String the numeric ID off the file name.
         fileName=$( basename ${musicFile} ".muz.txt")
 
-        if [[ ${fileName} > ${maxId} ]]
+        if [[ "${fileName}" -gt ${maxId} ]]
         then
-            maxId=${fileName} 
+            maxId="${fileName}"
         fi
-    done     
+    done
 
     # Set max ID and check it.
     # We need this for easier addition of new records.
@@ -76,23 +73,23 @@ function init() {
         exit 1  # Bad initialization of Artist ID.
     fi
 
-    echo "Music Collection System"    
-    echo 
+    echo "Music Collection System"
+    echo
 }
 
 function printRecordCount() {
 
     local count=0
     local musicFile   # Loop pointer.
-    
-    for musicFile in ./*.muz.txt  
+
+    for musicFile in ./*.muz.txt
     do
         if [[ -e ${musicFile} ]]
-        then 
+        then
             count=$(( count + 1 ))
         fi
-    done     
-    
+    done
+
     echo "Record Count: ${count}"
 }
 
@@ -103,7 +100,7 @@ function nextArtistId() {
 function printDivider() {
   echo "--------------------------------------------------------------------"
 }
- 
+
 function addRecord() {
     printDivider
     nextArtistId  # Set to next available ID.
@@ -121,48 +118,48 @@ function updateRecord() {
     then
         echo "Error: Record ID empty."
         return   # Get out now.
-    fi 
+    fi
 
     if [[ ! -e "${recordId}.muz.txt" ]]
     then
         echo "Error: Record ID ${recordId} not found."
         return   # Get out now.
-    fi 
-    
+    fi
+
     printDivider
     echo "Previous values for ${recordId} ..."
     printRecord "${recordId}.muz.txt"
     printTracks "${recordId}.muz.txt"
     printDivider
-    
+
     # Okay, update the record.
     updateArtist "${recordId}"
     updateTracks "${recordId}"
 }
 
 function updateArtist() {
-  
+
   local recordId="${1}"
   if [[ -z "${recordId}" ]]
   then
       echo "Error: Record ID empty."
       return   # Get out now.
-  fi 
-    
+  fi
+
   local artistName
   local recordName
   local genre
-  
-  read -p "Enter Artist Name:  " artistName 
-  read -p "Enter record title: " recordName
-  read -p "Enter record genre: " genre
-    
+
+  read -r -p "Enter Artist Name:  " artistName
+  read -r -p "Enter record title: " recordName
+  read -r -p "Enter record genre: " genre
+
   # Save values to file.
   local buffer
   local fileName
   buffer="${recordId}\t${artistName}\t${recordName}\t${genre}"
   fileName="${recordId}.muz.txt"
-  printf "${buffer}\n" > ${fileName}        
+  printf "${buffer}\n" > "${fileName}"
 }
 
 function updateTracks() {
@@ -171,104 +168,104 @@ function updateTracks() {
   local fileName="${1}.muz.txt"
 
   echo "Enter track information (hit CR when done). "
-  
-  while true  
-  do 
+
+  while true
+  do
     echo -n "Track $trackNum ==> "
-    read track
-    
+    read -r track
+
     if [ -z "$track" ]
-    then 
+    then
         break
     fi
-     
-    printf "::${trackNum}::${track}\n" >> ${fileName}        
-    
-    trackNum=$(( $trackNum + 1 ))
+
+    printf "::${trackNum}::${track}\n" >> "${fileName}"
+
+    trackNum=$(( trackNum + 1 ))
   done
 
   trackNum=$(( trackNum - 1 ))
   echo "You entered $trackNum tracks."
-  printf "[[total-tracks=%i]]\n" "${trackNum}" >> ${fileName}
+  printf "[[total-tracks=%i]]\n" "${trackNum}" >> "${fileName}"
 }
 
 function update() {
 
     local updateType="${1}"
-    
+
     case "${updateType}" in
-      track)    updateTrack "${2}" "${3}" ;;    
+      track)    updateTrack "${2}" "${3}" ;;
       record)   updateRecord "${2}" ;;
-      *)            
-                echo "Error: No update-type command found."    
+      *)
+                echo "Error: No update-type command found."
                 echo "You must specify a type of 'record' or 'track'."
                 echo "Usage 1:   update record (Record ID)"
                 echo "Usage 2:   update track (Record ID) (Track Number)"
                 echo "Example 1: update record 100001"
                 echo "Example 2: update track 100001 3"
-                echo 
+                echo
                 return  # Get out now.
                 ;;
     esac
 }
 
 function updateTrack() {
-    
+
     # Check the record ID specified.
     local recordId="${1}"
     if [[ ! -e "${recordId}.muz.txt" ]]
     then
         echo "Error: Record ID '${recordId}' not found."
         return   # Get out now.
-    fi 
-    
+    fi
+
     local trackNum="${2}"
     if [[ -z "${trackNum}" ]]
     then
         echo "Error: No track number in command found."
         echo "Usage:   update track (Record ID) (Track Number)"
         echo "Example: update track 100001 3"
-        echo 
+        echo
         return   # Get out now.
     fi
-            
+
     echo "updating record ${recordId}, track ${trackNum}."
-    
+
     echo "Current track value: "
-    
+
     awk 'BEGIN {FS="::"} /'"${trackNum}"'::(.*)/  \
         {print "\t" $2 ". " $3 }' "${recordId}.muz.txt"
 
     local track
     echo -n "Enter new track ${trackNum} value ==> "
-    read track
+    read -r track
     echo "You entered: ${track}"
 
     local before
     local after
-    
-    before=`awk 'BEGIN {FS="::"} /'"${trackNum}"'::(.*)/  \
-           {print "::" $2 "::" $3 }' "${recordId}.muz.txt"`    
+
+    before=$(awk 'BEGIN {FS="::"} /'"${trackNum}"'::(.*)/  \
+           {print "::" $2 "::" $3 }' "${recordId}.muz.txt")
     after="::${trackNum}::${track}"
-        
+
     # Problem here... sed should be able to output to a file,
     # but won't for some unknown reason.  Need to fix.
     # Short-term hack to sed to a variable and then print it.
     local text
-    text=`sed 's/'"${before}"'/'"${after}"'/' "${recordId}.muz.txt"`
+    text=$(sed 's/'"${before}"'/'"${after}"'/' "${recordId}.muz.txt")
     printf "${text}" > "${recordId}.muz.txt"
 }
 
 function search() {
 
     local searchType="${1}"
-    
+
     case "${searchType}" in
-      id | ID)      searchId     "${1}" "${2}" "${3}" ;;    
+      id | ID)      searchId     "${1}" "${2}" "${3}" ;;
       genre)        searchGenre  "${1}" "${2}" "${3}" ;;
       artist)       searchArtist "${1}" "${2}" "${3}" ;;
       title)        searchTitle  "${1}" "${2}" "${3}" ;;
-      tracks)       searchTracks "${1}" "${2}" "${3}" ;;      
+      tracks)       searchTracks "${1}" "${2}" "${3}" ;;
       *)            printUsageError ${searchType}
     esac
 
@@ -280,17 +277,17 @@ function searchGenre() {
     local keywords="${3}"
 
     # Get the search words off the end of the full command.
-    local keyword=`echo ${keywords##*$searchType}`
-        
+    local keyword=$(echo ${keywords##*$searchType})
+
     local musicFile
     for musicFile in ./*.muz.txt
     do
       if [[ -e "${musicFile}" ]]
-      then 
+      then
         awk 'BEGIN {FS="\t"} /^[1-9]([0-9]+)\t(.*)\t(.*)\t(.*)'"${keyword}"'/  \
-            {print $1 "  " $2 "   " $3 "   " $4}' "${musicFile}"      
-      fi 
-    done        
+            {print $1 "  " $2 "   " $3 "   " $4}' "${musicFile}"
+      fi
+    done
 }
 
 function searchArtist() {
@@ -299,13 +296,13 @@ function searchArtist() {
     local keywords="${3}"
 
     # Get the search words off the end of the full command.
-    local keyword=`echo ${keywords##*$searchType}`
+    local keyword=$(echo ${keywords##*$searchType})
 
     local musicFile
     for musicFile in ./*.muz.txt
     do
       if [[ -e "${musicFile}" ]]
-      then     
+      then
         # Search the column for the key word phrase.
         awk 'BEGIN {FS="\t"} /^[1-9]([0-9]+)\t(.*)'"${keyword}"'(.*)\t(.*)\t(.*)/  \
             {print $1 "  " $2 "   " $3 "   " $4}' "${musicFile}"
@@ -320,13 +317,13 @@ function searchTitle() {
     local keywords="${3}"
 
     # Get the search words off the end of the full command.
-    local keyword=`echo ${keywords##*$searchType}`
+    local keyword=$(echo ${keywords##*$searchType})
 
     local musicFile
     for musicFile in ./*.muz.txt
     do
       if [[ -e "${musicFile}" ]]
-      then             
+      then
         # Search the column for the key word phrase.
         awk 'BEGIN {FS="\t"} /^[1-9]([0-9]+)\t(.*)\t(.*)'"${keyword}"'(.*)\t(.*)/  \
             {print $1 "  " $2 "   " $3 "   " $4}' "${musicFile}"
@@ -340,13 +337,13 @@ function searchId() {
     local keywords="${3}"
 
     # Get the search words off the end of the full command.
-    local keyword=`echo ${keywords##*$searchType}`
-    
+    local keyword=$(echo ${keywords##*$searchType})
+
     local musicFile
     for musicFile in ./*.muz.txt
     do
       if [[ -e "${musicFile}" ]]
-      then     
+      then
         # Search the column for the key word phrase.
         awk 'BEGIN {FS="\t"} /^([0-9]*)'"${keyword}"'(.*) /  \
             {print $1 "  " $2 "   " $3 "   " $4}' "${musicFile}"
@@ -360,56 +357,56 @@ function searchTracks() {
     local keywords="${3}"
 
     # Get the search words off the end of the full command.
-    local keyword=`echo ${keywords##*$searchType}`
+    local keyword=$(echo ${keywords##*$searchType})
 
     local recordId
-            
+
     local musicFile
     for musicFile in ./*.muz.txt
     do
       if [[ -e "${musicFile}" ]]
-      then     
+      then
         recordId=$( basename ${musicFile} ".muz.txt")
-      
+
         # Search the column for the key word phrase.
         awk 'BEGIN {FS="::"} /[1-9][0-9]*::(.*)'"${keyword}"'(.*)/  \
             {print $3 "  [Track: " $2 \
             ", Record ID: " '"${recordId}"' "]" }' \
             "${musicFile}"
       fi
-    done    
+    done
 }
 
 
 function printRecords() {
-  
+
     printDivider
 
     local filePattern="./*.muz.txt"
-    
-    # See if user is looking for specific record.    
+
+    # See if user is looking for specific record.
     local recordId="${1}"
-    if [[ ! -z ${recordId} ]]
+    if [[ -n ${recordId} ]]
     then
         filePattern="./${recordId}.muz.txt"
     fi
-           
+
     local musicFile
     for musicFile in ${filePattern}
     do
       if [[ -e "${musicFile}" ]]
-      then 
+      then
           printRecord "${musicFile}"
           printTracks "${musicFile}"
-      fi 
+      fi
     done
-    
+
     printDivider
 }
 
-function printRecord() { 
+function printRecord() {
     awk 'BEGIN {FS="\t"} /^[1-9][0-9]/ \
-        {print $1 "  " $2 "   " $3 "   " $4}' $1 
+        {print $1 "  " $2 "   " $3 "   " $4}' $1
 }
 
 function printTracks() {
@@ -423,14 +420,14 @@ function printUsageError() {
 }
 
 function delete() {
-    
-    if [[ "${1}" -ne "record" ]]
-    then 
-        echo "Error: No delete type command found."    
+
+    if [[ "${1}" != 'record' ]]
+    then
+        echo "Error: No delete type command found."
         echo "You must specify an type to delete."
         echo "The only supported type is 'record'."
         echo "Example: delete record 100001"
-        echo 
+        echo
         return  # Get out now.
     fi
 
@@ -441,31 +438,31 @@ function delete() {
         then
             rm -f "${2}.muz.txt"
         fi
-    fi    
+    fi
 }
 
 function run() {
-    
-    init   
+
+    init
 
     while true
     do
         local userInput   # What user types.
         local sCommand     # Command (first argument).
-        
-        read -p "music> " userInput
-        
+
+        read -r -p "music> " userInput
+
         # Parse user input for command and arguments.
         local -i i=0       # Loop counter.
         local -a inputs  # Command and args.
         for token in ${userInput}
         do
-            inputs[${i}]=${token}
+            inputs[i]=${token}
             i=$(( i + 1 ))
         done
-        
-        # Act on command. 
-        sCommand="${inputs[0]}"       
+
+        # Act on command.
+        sCommand="${inputs[0]}"
         case "${sCommand}" in
           add)          addRecord ;;
           add-artist)   addRecord ;;
@@ -475,10 +472,11 @@ function run() {
           delete)       delete "${inputs[1]}" "${inputs[2]}" ;;
           search)       search "${inputs[1]}" "${inputs[2]}" "${userInput}" ;;
           update)       update "${inputs[1]}" "${inputs[2]}" "${inputs[3]}" ;;
-          quit)         break ;; 
-          *)            printUsageError ${sCommand}
+          exit)         break ;;
+          quit)         break ;;
+          *)            printUsageError "${sCommand}"
         esac
-        
+
         # Clear last user command.
         unset inputs
     done
@@ -489,7 +487,7 @@ function run() {
 #
 # Run the application.
 #
-clear 
+clear
 run
 
 exit 0

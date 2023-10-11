@@ -19,7 +19,7 @@ If necessary, change the permissions on the script.
 
 To start the program, type "music" at the command prompt.
 
-    $ music
+    $ ./music
 
 The program displays its own prompt, which looks like:
 
